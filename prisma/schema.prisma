@@ -23,11 +23,11 @@ enum orderStatus {
 
 model User {
   id        Int       @id @unique @default(autoincrement())
-  type      Type
+  type      Type      @default(ENTREGADOR)
   name      String
   email     String
   password  String
-  cpf       String    @db.VarChar(11)
+  cpf       String    @unique @db.VarChar(11)
   latitude  Float
   longitude Float
   createdAt DateTime  @default(now()) @map("created_at")
