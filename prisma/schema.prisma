@@ -34,7 +34,8 @@ model User {
   updatedAt DateTime?
   deletedAt DateTime?
 
-  Order Order[]
+  Order        Order[]
+  refreshToken refreshToken[]
 }
 
 model Recipient {
@@ -61,4 +62,13 @@ model Order {
 
   Delivery  User      @relation(fields: [delivery_id], references: [id])
   Recipient Recipient @relation(fields: [recipient_id], references: [id])
+}
+
+model refreshToken {
+  id           Int     @id @unique @default(autoincrement())
+  refreshToken String
+  user_id      Int
+  used         Boolean @default(false)
+
+  User User @relation(fields: [user_id], references: [id])
 }
