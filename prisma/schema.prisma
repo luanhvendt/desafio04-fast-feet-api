@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Type {
+  ADMIN
+  ENTREGADOR
+}
+
+enum orderStatus {
+  AGUARDANDO
+  ENTREGUE
+  DEVOLVIDA
+}
+
+model User {
+  id        Int       @id @unique @default(autoincrement())
+  type      Type
+  name      String
+  email     String
+  password  String
+  cpf       String    @db.VarChar(11)
+  latitude  Float
+  longitude Float
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime?
+  deletedAt DateTime?
+
+  Order Order[]
+}
+
+model Recipient {
+  id        Int       @id @unique @default(autoincrement())
+  name      String
+  email     String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime?
+  deletedAt DateTime?
+  Order     Order[]
+}
+
+model Order {
+  id           Int         @id @unique @default(autoincrement())
+  delivery_id  Int
+  recipient_id Int
+  status       orderStatus
+  latitude     Float
+  longitude    Float
+  photo        String
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime?
+  deletedAt    DateTime?
+
+  Delivery  User      @relation(fields: [delivery_id], references: [id])
+  Recipient Recipient @relation(fields: [recipient_id], references: [id])
+}
