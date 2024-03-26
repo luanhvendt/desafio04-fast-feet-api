@@ -64,7 +64,7 @@ export class PrismaUsersRepository implements UsersRepository {
             where: whereCondition,
         });
 
-        const pets = await this.prisma.user.findMany({
+        const users = await this.prisma.user.findMany({
             where: whereCondition,
             skip,
             take: limit,
@@ -76,7 +76,7 @@ export class PrismaUsersRepository implements UsersRepository {
             search,
             limit,
             pages: Math.ceil(total / limit),
-            data: pets,
+            data: users,
         };
     }
 

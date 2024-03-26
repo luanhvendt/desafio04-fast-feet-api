@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
+import { RecipientsRepository } from './repositories/recipients.repository';
 
 @Injectable()
 export class RecipientsService {
-  create(createRecipientDto: CreateRecipientDto) {
-    return 'This action adds a new recipient';
+  constructor(private recipientsRepository: RecipientsRepository) { }
+
+  async create(data: CreateRecipientDto) {
+    if (!data.name) {
+      throw new BadRequestException('Name is required.')
+    }
+
+    if (!data.email) {
+      throw new BadRequestException('Email is required.')
+    }
+
+    const findedRecipient = await this.recipientsRepository.findUniqueByEmail(data.email)
+
+    if (findedRecipient) {
+      throw new BadRequestException('Recipient already exists.')
+    }
+
+    return await this.recipientsRepository.create(data)
   }
 
-  findAll() {
-    return `This action returns all recipients`;
+  async findAll(query) {
+    return await this.recipientsRepository.findAll(query)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} recipient`;
+  async findUnique(id: string) {
+    const recipient = await this.recipientsRepository.findUniqueById(id)
+
+    if (!recipient) {
+      throw new BadRequestException('Recipient not found.')
+    }
+
+    return recipient
   }
 
-  update(id: number, updateRecipientDto: UpdateRecipientDto) {
-    return `This action updates a #${id} recipient`;
+  async update(id: string, data: UpdateRecipientDto) {
+    const recipient = await this.findUnique(id)
+
+    const updatedRecipient = await this.recipientsRepository.update(id, data)
+
+    return updatedRecipient
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} recipient`;
+  async delete(id: string) {
+    const recipient = await this.findUnique(id)
+
+    return this.recipientsRepository.delete(id)
   }
 }
