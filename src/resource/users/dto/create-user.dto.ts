@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
     @IsString()
@@ -11,9 +11,13 @@ export class CreateUserDto {
     password: string;
 
     @MaxLength(11)
+    @IsString()
     cpf: string;
 
+    @IsNumber()
     latitude: number;
+
+    @IsNumber()
     longitude: number;
     createdAt: Date;
 }

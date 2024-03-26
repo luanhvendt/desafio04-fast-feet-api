@@ -9,30 +9,6 @@ export class UsersService {
   constructor(private usersRepository: UsersRepository) { }
 
   async create(data: CreateUserDto) {
-    if (!data.name) {
-      throw new BadRequestException('Name is required.')
-    }
-
-    if (!data.email) {
-      throw new BadRequestException('Email is required.')
-    }
-
-    if (!data.password) {
-      throw new BadRequestException('Password is required.')
-    }
-
-    if (!data.cpf) {
-      throw new BadRequestException('CPF is required.')
-    }
-
-    if (!data.latitude) {
-      throw new BadRequestException('Latitude is required.')
-    }
-
-    if (!data.longitude) {
-      throw new BadRequestException('Longitude is required.')
-    }
-
     const findedUser = await this.usersRepository.findUniqueByCPF(data.cpf)
 
     if (findedUser) {
