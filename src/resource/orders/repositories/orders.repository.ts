@@ -4,7 +4,7 @@ import { UpdateOrderDto } from "../dto/update-order.dto";
 import { OrderEntity } from "../entities/order.entity";
 
 export abstract class OrdersRepository {
-    abstract create(data: CreateOrderDto): Promise<void>
+    abstract create(currentUserId: string, data: CreateOrderDto): Promise<void>
     abstract findAll(query: QueryOrderDto)
     abstract findUniqueById(id: string): Promise<OrderEntity>
     abstract update(id: string, dataOrder: UpdateOrderDto): Promise<OrderEntity>

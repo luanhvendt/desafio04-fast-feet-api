@@ -12,10 +12,10 @@ export class PrismaOrdersRepository implements OrdersRepository {
         private prisma: PrismaService
     ) { }
 
-    async create(data: CreateOrderDto): Promise<void> {
+    async create(currentUserId: string, data: CreateOrderDto): Promise<void> {
         const oder = await this.prisma.order.create({
             data: {
-                delivery_id: data.delivery_id,
+                delivery_id: parseInt(currentUserId),
                 recipient_id: data.recipient_id,
                 status: data.status,
                 latitude: data.latitude,

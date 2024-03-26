@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RecipientsRepository } from '../recipients/repositories/recipients.repository';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -13,32 +13,12 @@ export class OrdersService {
     private usersRepository: UsersRepository,
   ) { }
 
-  async create(data: CreateOrderDto) {
-    if (!data.delivery_id) {
-      throw new BadRequestException('Delivery_id is required.')
-    }
-
-    if (!data.recipient_id) {
-      throw new BadRequestException('Recipient_id is required.')
-    }
-
-    if (!data.status) {
-      throw new BadRequestException('Status is required.')
-    }
-
-    if (!data.latitude) {
-      throw new BadRequestException('Latitude is required.')
-    }
-
-    if (!data.longitude) {
-      throw new BadRequestException('Longitude is required.')
-    }
-
+  async create(currentUserId: string, data: CreateOrderDto) {
     if (data.status !== 'AGUARDANDO' && data.status !== 'ENTREGUE' && data.status !== 'DEVOLVIDA') {
       throw new BadRequestException('Status not valid. (AGUARDANDO, ENTREGUE, DEVOLVIDA)')
     }
 
-    const findedUser = await this.usersRepository.findUniqueById(String(data.delivery_id))
+    const findedUser = await this.usersRepository.findUniqueById(currentUserId)
 
     if (!findedUser) {
       throw new BadRequestException('Delivery driver not found.')
@@ -50,7 +30,7 @@ export class OrdersService {
       throw new BadRequestException('Recipient not found.')
     }
 
-    return await this.ordersRepository.create(data)
+    return await this.ordersRepository.create(currentUserId, data)
   }
 
   async findAll(query) {
