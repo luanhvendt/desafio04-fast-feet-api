@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/database/prisma-service";
+import { PrismaService } from "src/database/prisma.service";
 import { CreateOrderDto } from "../../dto/create-order.dto";
 import { QueryOrderDto } from "../../dto/query-order.dto";
 import { UpdateOrderDto } from "../../dto/update-order.dto";
@@ -28,17 +28,17 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
     async findAll(query: QueryOrderDto) {
         let { page = 1, limit = 10, search = '', delivery_id, recipient_id, status, latitude, longitude } = query;
-    
+
         page = Number(page);
         limit = Number(limit);
         search = String(search);
-    
+
         const skip = (page - 1) * limit;
-    
+
         let whereCondition: any = {
             deletedAt: null,
         };
-    
+
         if (search) {
             whereCondition.OR = [
                 { delivery_id: { contains: search } },
@@ -48,39 +48,39 @@ export class PrismaOrdersRepository implements OrdersRepository {
                 { longitude: { contains: search } },
             ];
         }
-    
+
         if (delivery_id) {
             delivery_id = Number(delivery_id);
             whereCondition.delivery_id = delivery_id;
         }
-    
+
         if (recipient_id) {
             recipient_id = Number(recipient_id);
             whereCondition.recipient_id = recipient_id;
         }
-    
+
         if (status) {
             whereCondition.status = status;
         }
-    
+
         if (latitude) {
             whereCondition.latitude = latitude;
         }
-    
+
         if (longitude) {
             whereCondition.longitude = longitude;
         }
-    
+
         const total = await this.prisma.order.count({
             where: whereCondition,
         });
-    
+
         const orders = await this.prisma.order.findMany({
             where: whereCondition,
             skip,
             take: limit,
         });
-    
+
         return {
             total,
             page,
@@ -90,7 +90,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
             data: orders,
         };
     }
-    
+
 
     async findUniqueById(id: string): Promise<OrderEntity> {
         const order = await this.prisma.order.findUnique({
