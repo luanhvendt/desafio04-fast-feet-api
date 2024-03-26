@@ -33,7 +33,11 @@ export class UsersService {
     return user
   }
 
-  async update(id: string, data: UpdateUserDto) {
+  async update(currentUserId: string, id: string, data: UpdateUserDto) {
+    if (currentUserId !== id) {
+      throw new BadRequestException('Não consegue né?')
+    }
+
     const user = await this.findUnique(id)
 
     const updatedUser = await this.usersRepository.update(id, data)

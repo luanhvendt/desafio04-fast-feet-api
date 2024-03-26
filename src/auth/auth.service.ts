@@ -130,12 +130,12 @@ export class AuthService {
     }
 
     async validateUser(payload: { id: string }) {
-        const org = await this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { id: Number(payload.id) },
         });
-        if (!org) {
+        if (!user) {
             throw new UnauthorizedException();
         }
-        return org;
+        return user;
     }
 }
