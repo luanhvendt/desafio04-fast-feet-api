@@ -55,7 +55,7 @@ model Order {
   status       orderStatus
   latitude     Float
   longitude    Float
-  photo        String
+  photo        String?
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime?
   deletedAt    DateTime?
