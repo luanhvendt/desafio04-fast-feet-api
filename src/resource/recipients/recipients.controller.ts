@@ -48,7 +48,9 @@ export class RecipientsController {
 
   @Delete(':id')
   async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
-    // Implementar: somente pode ser deletados por um Admin
+    if (currentUser.type !== 'ADMIN') {
+      throw new UnauthorizedException('Usuário não autorizado.')
+    }
 
     return this.recipientsService.delete(id);
   }

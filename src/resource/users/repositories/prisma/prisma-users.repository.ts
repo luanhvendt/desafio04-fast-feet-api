@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
+import { getDistanceBetweenCoordinates } from "src/utils/get-distance-between-cordinates";
 import { CreateUserDto } from "../../dto/create-user.dto";
 import { QueryUserDto } from "../../dto/query-user.dto";
 import { UpdateUserDto } from "../../dto/update-user.dto";
 import { UserEntity } from "../../entities/user.entity";
 import { UsersRepository } from "../users.repository";
 
+export interface Coordinate {
+    latitude: number
+    longitude: number
+}
 @Injectable()
 export class PrismaUsersRepository implements UsersRepository {
     constructor(
@@ -81,7 +86,6 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
     async findUniqueById(id: string): Promise<UserEntity> {
-        console.log('ID AQUI', id)
         const user = await this.prisma.user.findUnique({
             where: {
                 id: parseInt(id),
@@ -101,6 +105,35 @@ export class PrismaUsersRepository implements UsersRepository {
         })
 
         return user
+    }
+
+    async findNearbyOrders(currentUserId: string) {
+        const { latitude: userLatitude, longitude: userLongitude } = await this.prisma.user.findUnique({
+            where: {
+                id: parseInt(currentUserId),
+                deletedAt: null,
+            }
+        })
+
+        const orders = await this.prisma.order.findMany({
+            where: {
+                delivery_id: parseInt(currentUserId),
+                deletedAt: null,
+            }
+        })
+
+        const MAX_DISTANCE_IN_KILOMETERS = 2
+
+        const nearbyOrders = orders.filter((order) => {
+            const distance = getDistanceBetweenCoordinates(
+                { latitude: userLatitude, longitude: userLongitude },
+                { latitude: order.latitude, longitude: order.longitude }
+            )
+
+            return distance <= MAX_DISTANCE_IN_KILOMETERS;
+        })
+
+        return nearbyOrders
     }
 
     async update(id: string, dataUser: UpdateUserDto): Promise<UserEntity> {

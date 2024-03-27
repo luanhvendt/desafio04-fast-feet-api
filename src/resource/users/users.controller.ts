@@ -26,6 +26,13 @@ export class UsersController {
     return this.usersService.findAll(query);
   }
 
+  @Get('/nearbyOrders')
+  async findNearbyOrders(@CurrentUser() currentUser: UserEntity) {
+
+
+    return this.usersService.findNearbyOrders(String(currentUser.id))
+  }
+
   @Get(':id')
   async findUnique(@CurrentUser() currentUser, @Param('id') id: string) {
     if (String(currentUser.id) !== id) {

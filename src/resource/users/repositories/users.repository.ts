@@ -8,6 +8,7 @@ export abstract class UsersRepository {
     abstract findAll(query: QueryUserDto)
     abstract findUniqueById(id: string): Promise<UserEntity>
     abstract findUniqueByCPF(cpf: string): Promise<UserEntity>
+    abstract findNearbyOrders(currentUserId: string)
     abstract update(id: string, dataUser: UpdateUserDto): Promise<UserEntity>
     abstract delete(id: string): Promise<void>
 }

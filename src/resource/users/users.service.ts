@@ -33,6 +33,10 @@ export class UsersService {
     return user
   }
 
+  async findNearbyOrders(currentUserId: string) {
+    return await this.usersRepository.findNearbyOrders(currentUserId)
+  }
+
   async update(id: string, data: UpdateUserDto) {
     const user = await this.findUnique(id)
 

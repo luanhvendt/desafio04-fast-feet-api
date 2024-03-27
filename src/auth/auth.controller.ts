@@ -11,9 +11,6 @@ export class AuthController {
     @HttpCode(200)
     async login(@Request() req, @Body() dataLogin: LoginDto) {
         const loginResponse = await this.authService.login(dataLogin)
-        // const { user: { id } } = loginResponse
-        // console.log('id', id)
-
         return await this.authService.login(dataLogin)
     }
 
