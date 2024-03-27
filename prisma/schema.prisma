@@ -39,13 +39,14 @@ model User {
 }
 
 model Recipient {
-  id        Int       @id @unique @default(autoincrement())
-  name      String
-  email     String    @unique
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime?
-  deletedAt DateTime?
-  Order     Order[]
+  id           Int            @id @unique @default(autoincrement())
+  name         String
+  email        String         @unique
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime?
+  deletedAt    DateTime?
+  Order        Order[]
+  notification notification[]
 }
 
 model Order {
@@ -60,8 +61,9 @@ model Order {
   updatedAt    DateTime?
   deletedAt    DateTime?
 
-  Delivery  User      @relation(fields: [delivery_id], references: [id])
-  Recipient Recipient @relation(fields: [recipient_id], references: [id])
+  Delivery     User           @relation(fields: [delivery_id], references: [id])
+  Recipient    Recipient      @relation(fields: [recipient_id], references: [id])
+  notification notification[]
 }
 
 model refreshToken {
@@ -71,4 +73,15 @@ model refreshToken {
   used         Boolean @default(false)
 
   User User @relation(fields: [user_id], references: [id])
+}
+
+model notification {
+  id           Int      @id @unique @default(autoincrement())
+  order_id     Int
+  recipient_id Int
+  description  String
+  createdAt    DateTime @default(now())
+
+  Order     Order     @relation(fields: [order_id], references: [id])
+  Recipient Recipient @relation(fields: [recipient_id], references: [id])
 }
