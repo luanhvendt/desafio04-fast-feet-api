@@ -28,6 +28,11 @@ export class RecipientsController {
     return this.recipientsService.findAll(query);
   }
 
+  @Get('notification/:id')
+  async findNotifications(@Param('id') id: string) {
+    return this.recipientsService.findNotifications(id)
+  }
+
   @Get(':id')
   async findOne(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
     if (currentUser.type !== 'ADMIN') {

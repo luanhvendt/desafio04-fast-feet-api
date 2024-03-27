@@ -198,6 +198,17 @@ export class PrismaOrdersRepository implements OrdersRepository {
             }
         })
 
+        if (data.status) {
+            await this.prisma.notification.create({
+                data: {
+                    order_id: parseInt(id),
+                    recipient_id: order.recipient_id,
+                    description: `O status da sua encomenda '${id}' foi alterado.`,
+                    createdAt: new Date()
+                }
+            })
+        }
+
         return order
     }
 

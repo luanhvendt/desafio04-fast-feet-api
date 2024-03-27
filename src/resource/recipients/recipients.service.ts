@@ -39,6 +39,10 @@ export class RecipientsService {
     return recipient
   }
 
+  async findNotifications(recipient_id: string) {
+    return await this.recipientsRepository.findNotifications(recipient_id)
+  }
+
   async update(id: string, data: UpdateRecipientDto) {
     const recipient = await this.findUnique(id)
 

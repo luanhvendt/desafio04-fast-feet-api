@@ -90,6 +90,16 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
         return recipient
     }
 
+    async findNotifications(recipient_id: string) {
+        const notifications = await this.prisma.notification.findMany({
+            where: {
+                recipient_id: parseInt(recipient_id),
+            }
+        })
+
+        return notifications
+    }
+
     async update(id: string, dataRecipient: UpdateRecipientDto): Promise<RecipientEntity> {
         const recipient = await this.prisma.recipient.update({
             where: {

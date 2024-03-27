@@ -8,6 +8,7 @@ export abstract class RecipientsRepository {
     abstract findAll(query: QueryUserDto)
     abstract findUniqueById(id: string): Promise<RecipientEntity>
     abstract findUniqueByEmail(email: string): Promise<RecipientEntity>
+    abstract findNotifications(recipient_id: string)
     abstract update(id: string, dataRecipient: UpdateRecipientDto): Promise<RecipientEntity>
     abstract delete(id: string): Promise<void>
 }
