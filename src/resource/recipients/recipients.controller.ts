@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { QueryRecipientDto } from './dto/query-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
@@ -9,27 +11,45 @@ export class RecipientsController {
   constructor(private readonly recipientsService: RecipientsService) { }
 
   @Post()
-  async create(@Body() createRecipientDto: CreateRecipientDto) {
+  async create(@CurrentUser() currentUser: UserEntity, @Body() createRecipientDto: CreateRecipientDto) {
+    if (currentUser.type !== 'ADMIN') {
+      throw new UnauthorizedException('Usuário não autorizado.')
+    }
+
     return this.recipientsService.create(createRecipientDto);
   }
 
   @Get()
-  async findAll(@Query() query: QueryRecipientDto) {
+  async findAll(@CurrentUser() currentUser: UserEntity, @Query() query: QueryRecipientDto) {
+    if (currentUser.type !== 'ADMIN') {
+      throw new UnauthorizedException('Usuário não autorizado.')
+    }
+
     return this.recipientsService.findAll(query);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
+    if (currentUser.type !== 'ADMIN') {
+      throw new UnauthorizedException('Usuário não autorizado.')
+    }
+
     return this.recipientsService.findUnique(id);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateRecipientDto: UpdateRecipientDto) {
+  async update(@CurrentUser() currentUser: UserEntity, @Param('id') id: string, @Body() updateRecipientDto: UpdateRecipientDto) {
+    if (currentUser.type !== 'ADMIN') {
+      throw new UnauthorizedException('Usuário não autorizado.')
+    }
+
     return this.recipientsService.update(id, updateRecipientDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
+    // Implementar: somente pode ser deletados por um Admin
+
     return this.recipientsService.delete(id);
   }
 }

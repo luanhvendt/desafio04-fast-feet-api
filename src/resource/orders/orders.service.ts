@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RecipientsRepository } from '../recipients/repositories/recipients.repository';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -33,12 +33,17 @@ export class OrdersService {
     return await this.ordersRepository.create(currentUserId, data)
   }
 
-  async findAll(query) {
-    return await this.ordersRepository.findAll(query)
+  async findAll(currentUserId: string, query) {
+    return await this.ordersRepository.findAll(currentUserId, query)
   }
 
-  async findUniqueById(id: string) {
-    const order = await this.ordersRepository.findUniqueById(id)
+  async findAllAdmin(query) {
+    return await this.ordersRepository.findAllAdmin(query)
+  }
+
+
+  async findUniqueById(currentUserId: string, id: string) {
+    const order = await this.ordersRepository.findUniqueById(currentUserId, id)
 
     if (!order) {
       throw new BadRequestException('Order not found.')
@@ -47,8 +52,18 @@ export class OrdersService {
     return order
   }
 
-  async update(id: string, data: UpdateOrderDto) {
-    const order = await this.findUniqueById(id)
+  async findUniqueByIdAdmin(id: string) {
+    const order = await this.ordersRepository.findUniqueByIdAdmin(id)
+
+    if (!order) {
+      throw new BadRequestException('Order not found.')
+    }
+
+    return order
+  }
+
+  async update(currentUserId: string, id: string, data: UpdateOrderDto) {
+    const order = await this.findUniqueById(currentUserId, id)
 
     if (data.status) {
       if (data.status !== 'AGUARDANDO' && data.status !== 'ENTREGUE' && data.status !== 'DEVOLVIDA') {
@@ -56,14 +71,14 @@ export class OrdersService {
       }
     }
 
-    const updatedOrder = await this.ordersRepository.update(id, data)
+    const updatedOrder = await this.ordersRepository.update(currentUserId, id, data)
 
     return updatedOrder
   }
 
-  async delete(id: string) {
-    const order = await this.findUniqueById(id)
+  async delete(currentUserId: string, id: string) {
+    const order = await this.findUniqueById(currentUserId, id)
 
-    return this.ordersRepository.delete(id)
+    return this.ordersRepository.delete(currentUserId, id)
   }
 }

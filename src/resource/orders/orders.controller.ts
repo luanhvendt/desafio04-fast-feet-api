@@ -22,20 +22,20 @@ export class OrdersController {
 
   @Get()
   async findAll(@CurrentUser() currentUser: UserEntity, @Query() query: QueryOrderDto) {
-    if (currentUser.type !== 'ADMIN') {
-      throw new UnauthorizedException('Usuário não autorizado.')
+    if (currentUser.type === 'ADMIN') {
+      return this.ordersService.findAllAdmin(query);
     }
 
-    return this.ordersService.findAll(query);
+    return this.ordersService.findAll(String(currentUser.id), query);
   }
 
   @Get(':id')
   async findUnique(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
-    if (currentUser.type !== 'ADMIN') {
-      throw new UnauthorizedException('Usuário não autorizado.')
+    if (currentUser.type === 'ADMIN') {
+      return this.ordersService.findUniqueByIdAdmin(id)
     }
 
-    return this.ordersService.findUniqueById(id);
+    return this.ordersService.findUniqueById(String(currentUser.id), id);
   }
 
   @Put(':id')
@@ -44,7 +44,8 @@ export class OrdersController {
       throw new UnauthorizedException('Usuário não autorizado.')
     }
 
-    return this.ordersService.update(id, updateOrderDto);
+
+    return this.ordersService.update(String(currentUser.id), id, updateOrderDto);
   }
 
   @Delete(':id')
@@ -53,6 +54,6 @@ export class OrdersController {
       throw new UnauthorizedException('Usuário não autorizado.')
     }
 
-    return this.ordersService.delete(id);
+    return this.ordersService.delete(String(currentUser.id), id);
   }
 }

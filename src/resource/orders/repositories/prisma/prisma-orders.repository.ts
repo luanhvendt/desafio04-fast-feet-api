@@ -26,7 +26,73 @@ export class PrismaOrdersRepository implements OrdersRepository {
         })
     }
 
-    async findAll(query: QueryOrderDto) {
+    async findAll(currentUserId: string, query: QueryOrderDto) {
+        let { page = 1, limit = 10, search = '', delivery_id, recipient_id, status, latitude, longitude } = query;
+
+        page = Number(page);
+        limit = Number(limit);
+        search = String(search);
+
+        const skip = (page - 1) * limit;
+
+        let whereCondition: any = {
+            delivery_id: parseInt(currentUserId),
+            deletedAt: null,
+        };
+
+        if (search) {
+            whereCondition.OR = [
+                { delivery_id: { contains: search } },
+                { recipient_id: { contains: search } },
+                { status: { contains: search } },
+                { latitude: { contains: search } },
+                { longitude: { contains: search } },
+            ];
+        }
+
+        if (delivery_id) {
+            delivery_id = Number(delivery_id);
+            whereCondition.delivery_id = delivery_id;
+        }
+
+        if (recipient_id) {
+            recipient_id = Number(recipient_id);
+            whereCondition.recipient_id = recipient_id;
+        }
+
+        if (status) {
+            whereCondition.status = status;
+        }
+
+        if (latitude) {
+            whereCondition.latitude = latitude;
+        }
+
+        if (longitude) {
+            whereCondition.longitude = longitude;
+        }
+
+        const total = await this.prisma.order.count({
+            where: whereCondition,
+        });
+
+        const orders = await this.prisma.order.findMany({
+            where: whereCondition,
+            skip,
+            take: limit,
+        });
+
+        return {
+            total,
+            page,
+            search,
+            limit,
+            pages: Math.ceil(total / limit),
+            data: orders,
+        };
+    }
+
+    async findAllAdmin(query: QueryOrderDto) {
         let { page = 1, limit = 10, search = '', delivery_id, recipient_id, status, latitude, longitude } = query;
 
         page = Number(page);
@@ -91,8 +157,19 @@ export class PrismaOrdersRepository implements OrdersRepository {
         };
     }
 
+    async findUniqueById(currentUserId: string, id: string): Promise<OrderEntity> {
+        const order = await this.prisma.order.findUnique({
+            where: {
+                id: parseInt(id),
+                delivery_id: parseInt(currentUserId),
+                deletedAt: null,
+            }
+        })
 
-    async findUniqueById(id: string): Promise<OrderEntity> {
+        return order
+    }
+
+    async findUniqueByIdAdmin(id: string): Promise<OrderEntity> {
         const order = await this.prisma.order.findUnique({
             where: {
                 id: parseInt(id),
@@ -103,10 +180,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
         return order
     }
 
-    async update(id: string, data: UpdateOrderDto): Promise<OrderEntity> {
+    async update(currentUserId: string, id: string, data: UpdateOrderDto): Promise<OrderEntity> {
         const order = await this.prisma.order.update({
             where: {
                 id: parseInt(id),
+                delivery_id: parseInt(currentUserId),
                 deletedAt: null,
             },
             data: {
@@ -123,10 +201,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
         return order
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(currenUserId: string, id: string): Promise<void> {
         const order = await this.prisma.order.update({
             where: {
                 id: parseInt(id),
+                delivery_id: parseInt(currenUserId),
                 deletedAt: null,
             },
             data: {

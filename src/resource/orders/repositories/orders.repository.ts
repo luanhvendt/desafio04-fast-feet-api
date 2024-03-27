@@ -5,8 +5,10 @@ import { OrderEntity } from "../entities/order.entity";
 
 export abstract class OrdersRepository {
     abstract create(currentUserId: string, data: CreateOrderDto): Promise<void>
-    abstract findAll(query: QueryOrderDto)
-    abstract findUniqueById(id: string): Promise<OrderEntity>
-    abstract update(id: string, dataOrder: UpdateOrderDto): Promise<OrderEntity>
-    abstract delete(id: string): Promise<void>
+    abstract findAll(currentUserId: string, query: QueryOrderDto)
+    abstract findAllAdmin(query: QueryOrderDto)
+    abstract findUniqueById(currentUserId: string, id: string): Promise<OrderEntity>
+    abstract findUniqueByIdAdmin(id: string): Promise<OrderEntity>
+    abstract update(currentUserId: string, id: string, dataOrder: UpdateOrderDto): Promise<OrderEntity>
+    abstract delete(currentUserId: string, id: string): Promise<void>
 }
