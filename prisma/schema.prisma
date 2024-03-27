@@ -17,6 +17,7 @@ enum Type {
 
 enum orderStatus {
   AGUARDANDO
+  RETIRADA
   ENTREGUE
   DEVOLVIDA
 }
