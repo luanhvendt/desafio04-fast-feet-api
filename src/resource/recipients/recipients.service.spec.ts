@@ -99,6 +99,44 @@ describe('RecipientsService', () => {
             .not
             .toThrow()
 
-        await expect(recipientsService.update())
+        await expect(recipientsService.update('1', {
+            name: 'editado',
+            updatedAt: new Date()
+        }))
+            .resolves
+            .not
+            .toThrow()
+
+        const updatedRecipient = await inMemoryRecipientsRepository.findUniqueById('1')
+
+        expect(updatedRecipient).toEqual(expect.objectContaining({
+            name: 'editado'
+        }))
+    })
+
+    it('should be able to delete a recipient', async () => {
+        const inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+        const recipientsService = new RecipientsService(inMemoryRecipientsRepository)
+
+        await expect(recipientsService.create({
+            id: 1,
+            name: 'name',
+            email: 'mail@mail.com',
+            createdAt: new Date(),
+        }))
+            .resolves
+            .not
+            .toThrow()
+
+        await expect(recipientsService.delete('1'))
+            .resolves
+            .not
+            .toThrow()
+
+        expect(inMemoryRecipientsRepository.items).not.toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                email: 'mail@mail.com'
+            })
+        ]))
     })
 });

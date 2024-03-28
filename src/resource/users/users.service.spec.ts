@@ -132,7 +132,7 @@ describe('UsersService', () => {
             .not
             .toThrow()
 
-        const updatedUser = await inMemoryUsersRepository.findUniqueById('6')
+        const updatedUser = await inMemoryUsersRepository.findUniqueById('1')
 
         expect(updatedUser).toEqual(expect.objectContaining({
             name: 'editado'
