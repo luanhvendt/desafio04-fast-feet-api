@@ -1,8 +1,8 @@
 import { BadRequestException } from "@nestjs/common";
-import { CreateUserDto } from "src/resource/users/dto/create-user.dto";
-import { UpdateUserDto } from "src/resource/users/dto/update-user.dto";
-import { UserEntity } from "src/resource/users/entities/user.entity";
-import { UsersRepository } from "src/resource/users/repositories/users.repository";
+import { CreateUserDto } from "../../src/resource/users/dto/create-user.dto";
+import { UpdateUserDto } from "../../src/resource/users/dto/update-user.dto";
+import { UserEntity } from "../../src/resource/users/entities/user.entity";
+import { UsersRepository } from "../../src/resource/users/repositories/users.repository";
 
 let id: number = 1
 
