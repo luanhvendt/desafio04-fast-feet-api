@@ -7,5 +7,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     password?: string;
     latitude?: number;
     longitude?: number;
-    updatedAt: Date;
+    updatedAt?: Date;
 }
