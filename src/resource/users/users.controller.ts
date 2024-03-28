@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,7 +28,7 @@ export class UsersController {
 
     @Get(':id')
     async findUnique(@CurrentUser() currentUser, @Param('id') id: string) {
-        if (String(currentUser.id) !== id) {
+        if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
         }
 
@@ -37,7 +37,7 @@ export class UsersController {
 
     @Put(':id')
     async update(@CurrentUser() currentUser: UserEntity, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        if (String(currentUser.id) !== id) {
+        if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
         }
 
@@ -46,7 +46,7 @@ export class UsersController {
 
     @Delete(':id')
     async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
-        if (String(currentUser.id) !== id) {
+        if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
         }
 
