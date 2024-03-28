@@ -1,9 +1,9 @@
-import { CreateOrderDto } from "src/resource/orders/dto/create-order.dto";
-import { QueryOrderDto } from "src/resource/orders/dto/query-order.dto";
-import { UpdateOrderDto } from "src/resource/orders/dto/update-order.dto";
-import { OrderEntity } from "src/resource/orders/entities/order.entity";
-import { OrdersRepository } from "src/resource/orders/repositories/orders.repository";
-import { getDistanceBetweenCoordinates } from "src/utils/get-distance-between-cordinates";
+import { CreateOrderDto } from "../../src/resource/orders/dto/create-order.dto";
+import { QueryOrderDto } from "../../src/resource/orders/dto/query-order.dto";
+import { UpdateOrderDto } from "../../src/resource/orders/dto/update-order.dto";
+import { OrderEntity } from "../../src/resource/orders/entities/order.entity";
+import { OrdersRepository } from "../../src/resource/orders/repositories/orders.repository";
+import { getDistanceBetweenCoordinates } from "../../src/utils/get-distance-between-cordinates";
 
 
 export class InMemoryOrdersRepository implements OrdersRepository {

@@ -1,8 +1,8 @@
 import { BadRequestException } from "@nestjs/common";
-import { CreateRecipientDto } from "src/resource/recipients/dto/create-recipient.dto";
-import { UpdateRecipientDto } from "src/resource/recipients/dto/update-recipient.dto";
-import { RecipientEntity } from "src/resource/recipients/entities/recipient.entity";
-import { RecipientsRepository } from "src/resource/recipients/repositories/recipients.repository";
+import { CreateRecipientDto } from "../../src/resource/recipients/dto/create-recipient.dto";
+import { UpdateRecipientDto } from "../../src/resource/recipients/dto/update-recipient.dto";
+import { RecipientEntity } from "../../src/resource/recipients/entities/recipient.entity";
+import { RecipientsRepository } from "../../src/resource/recipients/repositories/recipients.repository";
 
 let id: number = 1
 

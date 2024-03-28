@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/database/prisma.service";
-import { getDistanceBetweenCoordinates } from "src/utils/get-distance-between-cordinates";
+import { getDistanceBetweenCoordinates } from "../../../../utils/get-distance-between-cordinates";
+import { PrismaService } from "../../../../database/prisma.service";
 import { CreateOrderDto } from "../../dto/create-order.dto";
 import { QueryOrderDto } from "../../dto/query-order.dto";
 import { UpdateOrderDto } from "../../dto/update-order.dto";

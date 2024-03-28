@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/database/prisma.service";
-import { QueryUserDto } from "src/resource/users/dto/query-user.dto";
+import { QueryRecipientDto } from "../../dto/query-recipient.dto";
+import { PrismaService } from "../../../../database/prisma.service";
 import { CreateRecipientDto } from "../../dto/create-recipient.dto";
 import { UpdateRecipientDto } from "../../dto/update-recipient.dto";
 import { RecipientEntity } from "../../entities/recipient.entity";
@@ -21,7 +21,7 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
         })
     }
 
-    async findAll(query: QueryUserDto) {
+    async findAll(query: QueryRecipientDto) {
         let { page = 1, limit = 10, search = '', name, email } = query;
 
         page = Number(page);

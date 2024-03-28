@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,46 +10,46 @@ import { UsersService } from './users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+    constructor(private readonly usersService: UsersService) { }
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  @Get()
-  async findAll(@CurrentUser() currentUser, @Query() query: QueryUserDto) {
-    if (currentUser.type !== 'ADMIN') {
-      throw new UnauthorizedException('Usuário não autorizado.')
+    @Post()
+    async create(@Body() createUserDto: CreateUserDto) {
+        return this.usersService.create(createUserDto);
     }
 
-    return this.usersService.findAll(query);
-  }
+    @Get()
+    async findAll(@CurrentUser() currentUser, @Query() query: QueryUserDto) {
+        if (currentUser.type !== 'ADMIN') {
+            throw new UnauthorizedException('Usuário não autorizado.')
+        }
 
-  @Get(':id')
-  async findUnique(@CurrentUser() currentUser, @Param('id') id: string) {
-    if (String(currentUser.id) !== id) {
-      throw new UnauthorizedException('Usuário não autorizado.')
+        return this.usersService.findAll(query);
     }
 
-    return this.usersService.findUnique(id);
-  }
+    @Get(':id')
+    async findUnique(@CurrentUser() currentUser, @Param('id') id: string) {
+        if (String(currentUser.id) !== id) {
+            throw new UnauthorizedException('Usuário não autorizado.')
+        }
 
-  @Put(':id')
-  async update(@CurrentUser() currentUser: UserEntity, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    if (String(currentUser.id) !== id) {
-      throw new UnauthorizedException('Usuário não autorizado.')
+        return this.usersService.findUnique(id);
     }
 
-    return this.usersService.update(id, updateUserDto);
-  }
+    @Put(':id')
+    async update(@CurrentUser() currentUser: UserEntity, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+        if (String(currentUser.id) !== id) {
+            throw new UnauthorizedException('Usuário não autorizado.')
+        }
 
-  @Delete(':id')
-  async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
-    if (String(currentUser.id) !== id) {
-      throw new UnauthorizedException('Usuário não autorizado.')
+        return this.usersService.update(id, updateUserDto);
     }
 
-    return this.usersService.delete(id);
-  }
+    @Delete(':id')
+    async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
+        if (String(currentUser.id) !== id) {
+            throw new UnauthorizedException('Usuário não autorizado.')
+        }
+
+        return this.usersService.delete(id);
+    }
 }
