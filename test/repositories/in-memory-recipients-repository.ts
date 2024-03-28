@@ -17,7 +17,7 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
         }
 
         const recipient = {
-            id,
+            id: data.id || id,
             name: data.name,
             email: data.email,
             createdAt: new Date()
