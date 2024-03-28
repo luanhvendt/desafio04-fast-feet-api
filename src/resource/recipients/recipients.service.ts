@@ -29,8 +29,18 @@ export class RecipientsService {
     return await this.recipientsRepository.findAll(query)
   }
 
-  async findUnique(id: string) {
+  async findUniqueById(id: string) {
     const recipient = await this.recipientsRepository.findUniqueById(id)
+
+    if (!recipient) {
+      throw new BadRequestException('Recipient not found.')
+    }
+
+    return recipient
+  }
+
+  async findUniqueByEmail(email: string) {
+    const recipient = await this.recipientsRepository.findUniqueByEmail(email)
 
     if (!recipient) {
       throw new BadRequestException('Recipient not found.')
@@ -44,7 +54,7 @@ export class RecipientsService {
   }
 
   async update(id: string, data: UpdateRecipientDto) {
-    const recipient = await this.findUnique(id)
+    const recipient = await this.findUniqueById(id)
 
     const updatedRecipient = await this.recipientsRepository.update(id, data)
 
@@ -52,7 +62,7 @@ export class RecipientsService {
   }
 
   async delete(id: string) {
-    const recipient = await this.findUnique(id)
+    const recipient = await this.findUniqueById(id)
 
     return this.recipientsRepository.delete(id)
   }
