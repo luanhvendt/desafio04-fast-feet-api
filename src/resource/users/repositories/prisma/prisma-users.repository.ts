@@ -107,35 +107,6 @@ export class PrismaUsersRepository implements UsersRepository {
         return user
     }
 
-    async findNearbyOrders(currentUserId: string) {
-        const { latitude: userLatitude, longitude: userLongitude } = await this.prisma.user.findUnique({
-            where: {
-                id: parseInt(currentUserId),
-                deletedAt: null,
-            }
-        })
-
-        const orders = await this.prisma.order.findMany({
-            where: {
-                delivery_id: parseInt(currentUserId),
-                deletedAt: null,
-            }
-        })
-
-        const MAX_DISTANCE_IN_KILOMETERS = 2
-
-        const nearbyOrders = orders.filter((order) => {
-            const distance = getDistanceBetweenCoordinates(
-                { latitude: userLatitude, longitude: userLongitude },
-                { latitude: order.latitude, longitude: order.longitude }
-            )
-
-            return distance <= MAX_DISTANCE_IN_KILOMETERS;
-        })
-
-        return nearbyOrders
-    }
-
     async update(id: string, dataUser: UpdateUserDto): Promise<UserEntity> {
         const user = await this.prisma.user.update({
             where: {

@@ -20,6 +20,12 @@ export class OrdersController {
     return this.ordersService.create(String(currentUser.id), createOrderDto);
   }
 
+  @Get('nearbyOrders')
+  async findNearbyOrders(@CurrentUser() currentUser: UserEntity) {
+
+    return this.ordersService.findNearbyOrders(String(currentUser.id))
+  }
+
   @Get()
   async findAll(@CurrentUser() currentUser: UserEntity, @Query() query: QueryOrderDto) {
     if (currentUser.type === 'ADMIN') {
@@ -37,6 +43,7 @@ export class OrdersController {
 
     return this.ordersService.findUniqueById(String(currentUser.id), id);
   }
+
 
   @Put(':id')
   async update(@CurrentUser() currentUser, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {

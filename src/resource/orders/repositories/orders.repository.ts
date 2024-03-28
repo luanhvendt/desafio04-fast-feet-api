@@ -9,6 +9,7 @@ export abstract class OrdersRepository {
     abstract findAllAdmin(query: QueryOrderDto)
     abstract findUniqueById(currentUserId: string, id: string): Promise<OrderEntity>
     abstract findUniqueByIdAdmin(id: string): Promise<OrderEntity>
+    abstract findNearbyOrders(currentUserId: string)
     abstract update(currentUserId: string, id: string, dataOrder: UpdateOrderDto): Promise<OrderEntity>
     abstract delete(currentUserId: string, id: string): Promise<void>
 }

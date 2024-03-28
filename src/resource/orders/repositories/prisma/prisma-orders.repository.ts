@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
+import { getDistanceBetweenCoordinates } from "src/utils/get-distance-between-cordinates";
 import { CreateOrderDto } from "../../dto/create-order.dto";
 import { QueryOrderDto } from "../../dto/query-order.dto";
 import { UpdateOrderDto } from "../../dto/update-order.dto";
@@ -178,6 +179,35 @@ export class PrismaOrdersRepository implements OrdersRepository {
         })
 
         return order
+    }
+
+    async findNearbyOrders(currentUserId: string) {
+        const { latitude: userLatitude, longitude: userLongitude } = await this.prisma.user.findUnique({
+            where: {
+                id: parseInt(currentUserId),
+                deletedAt: null,
+            }
+        })
+
+        const orders = await this.prisma.order.findMany({
+            where: {
+                delivery_id: parseInt(currentUserId),
+                deletedAt: null,
+            }
+        })
+
+        const MAX_DISTANCE_IN_KILOMETERS = 2
+
+        const nearbyOrders = orders.filter((order) => {
+            const distance = getDistanceBetweenCoordinates(
+                { latitude: userLatitude, longitude: userLongitude },
+                { latitude: order.latitude, longitude: order.longitude }
+            )
+
+            return distance <= MAX_DISTANCE_IN_KILOMETERS;
+        })
+
+        return nearbyOrders
     }
 
     async update(currentUserId: string, id: string, data: UpdateOrderDto): Promise<OrderEntity> {
