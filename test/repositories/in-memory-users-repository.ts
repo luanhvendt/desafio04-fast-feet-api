@@ -17,7 +17,7 @@ export class InMemoryUsersRepository implements UsersRepository {
         }
 
         const user = {
-            id,
+            id: data.id || id,
             name: data.name,
             type: 'ENTREGADOR',
             email: data.email,
