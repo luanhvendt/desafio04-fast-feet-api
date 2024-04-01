@@ -125,7 +125,7 @@ describe('UsersService', () => {
             .not
             .toThrow()
 
-        await expect(usersService.update('6', {
+        await expect(usersService.update('1', {
             name: 'editado',
         }))
             .resolves
