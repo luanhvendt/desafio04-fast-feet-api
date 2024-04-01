@@ -1,6 +1,9 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 export class CreateOrderDto {
+    @IsOptional()
+    id?: number
+
     @IsNumber()
     recipient_id: number;
 

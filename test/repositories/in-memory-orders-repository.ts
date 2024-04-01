@@ -5,13 +5,15 @@ import { OrderEntity } from "../../src/resource/orders/entities/order.entity";
 import { OrdersRepository } from "../../src/resource/orders/repositories/orders.repository";
 import { getDistanceBetweenCoordinates } from "../../src/utils/get-distance-between-cordinates";
 
+let id = 1
 
 export class InMemoryOrdersRepository implements OrdersRepository {
     public items: any = []
 
     async create(currentUserId: string, data: CreateOrderDto): Promise<void> {
         const order = {
-            id: currentUserId,
+            id: data.id || id,
+            delivery_id: parseInt(currentUserId),
             recipient_id: data.recipient_id,
             status: data.status,
             latitude: data.latitude,
@@ -20,20 +22,17 @@ export class InMemoryOrdersRepository implements OrdersRepository {
             createdAt: new Date()
         }
 
+        id += 1
         this.items.push(order)
     }
 
-    async findAll(currentUserId: string, query: QueryOrderDto) {
-        for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].id === parseInt(currentUserId)) {
-                return this.items[i]
-            }
-        }
+    async findAll() {
+        return this.items
     }
 
     async findUniqueById(currentUserId: string, id: string): Promise<OrderEntity> {
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].id === parseInt(id) && this.items[i].id === parseInt(currentUserId)) {
+            if (this.items[i].id === parseInt(id) && this.items[i].delivery_id === parseInt(currentUserId)) {
                 return this.items[i]
             }
         }
@@ -41,7 +40,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     async findNearbyOrders(currentUserId: string) {
         const user = {
-            id: currentUserId,
+            id: id,
             name: 'name',
             type: 'ENTREGADOR',
             email: 'email@mail.com',
@@ -76,7 +75,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     async update(currentUserId: string, id: string, dataOrder: UpdateOrderDto): Promise<OrderEntity> {
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].id === parseInt(id) && this.items[i].id === parseInt(currentUserId)) {
+            if (this.items[i].id === parseInt(id) && this.items[i].delivery_id === parseInt(currentUserId)) {
                 this.items[i].recipient_id = dataOrder.recipient_id,
                     this.items[i].status = dataOrder.status,
                     this.items[i].latitude = dataOrder.latitude,
@@ -91,7 +90,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     async delete(currentUserId: string, id: string): Promise<void> {
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].id === parseInt(id) && this.items[i].id === parseInt(currentUserId)) {
+            if (this.items[i].id === parseInt(id) && this.items[i].delivery_id === parseInt(currentUserId)) {
                 this.items.splice(i, 1);
             }
         }
