@@ -44,6 +44,10 @@ $ npm install
 
 ## Uso
 
+
+Para fazer as requisições da API, baixe o arquivo Desafio04-FastFeet-Insomnia.json com todas as configurações necessárias e importe-o no seu software de requisições, como o Insomnia ou Postman.
+
+
 Para iniciar o servidor, utilize:
 
 ```bash
