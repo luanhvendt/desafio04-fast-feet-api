@@ -8,7 +8,6 @@ import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
@@ -18,6 +17,7 @@ export class UsersController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     async findAll(@CurrentUser() currentUser, @Query() query: QueryUserDto) {
         if (currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
@@ -27,6 +27,7 @@ export class UsersController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async findUnique(@CurrentUser() currentUser, @Param('id') id: string) {
         if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
@@ -36,6 +37,7 @@ export class UsersController {
     }
 
     @Put(':id')
+    @UseGuards(JwtAuthGuard)
     async update(@CurrentUser() currentUser: UserEntity, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
@@ -45,6 +47,7 @@ export class UsersController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     async delete(@CurrentUser() currentUser: UserEntity, @Param('id') id: string) {
         if (String(currentUser.id) !== id && currentUser.type !== 'ADMIN') {
             throw new UnauthorizedException('Usuário não autorizado.')
